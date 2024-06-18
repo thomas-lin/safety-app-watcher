@@ -1,21 +1,36 @@
 import fetch from 'cross-fetch';
 import Debug from 'debug';
 import { parseFromString } from 'dom-parser';
+import fs from 'fs/promises';
+import path from 'path';
 
 import { appWorkAPI, appKeyUrl } from './config';
 
 const debug = Debug('appWorkClient');
-const getAppWorks = async (appKey: string) => {
-  const api = appWorkAPI.replace('{appKey}', appKey);
+
+const filter = (data: any) => {
+  return data
+    .filter((data: any) => data.CMODE === '0' || data.CMODE === '4' || data.CMODE === '5')
+    .filter((data: any) => data.VIDEOURL !== '');
+};
+const getAppWorks = async () => {
+  if (true) {
+    const mockData = await fs.readFile(path.join(__dirname, '../seeds/data.json'), 'utf-8');
+    return filter(JSON.parse(mockData));
+  }
+
+  const appKey = await getAppKey();
+  if (!appKey) {
+    throw new Error('no appKey');
+  }
+  const api = appWorkAPI.replace('{appKey}', appKey!);
   const response = await fetch(api);
   const result = await response.json();
   if (result.error) {
     throw new Error(result.error);
   }
 
-  const data = result
-    .filter((data: any) => data.CMODE === '0' || data.CMODE === '4' || data.CMODE === '5')
-    .filter((data: any) => data.VIDEOURL !== '');
+  const data = filter(result);
   debug(`getAppWorks size: ${result.length} -> ${data.length}`);
   return data;
 };
@@ -35,5 +50,4 @@ const getAppKey = async (): Promise<string | undefined> => {
 
 export default {
   getAppWorks,
-  getAppKey,
 };

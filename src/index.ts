@@ -1,8 +1,6 @@
 import { CronJob } from 'cron';
 import Debug from 'debug';
-import fs from 'fs/promises';
 import { connect } from 'nats';
-import path from 'path';
 
 import appWorkClient from './appWorkClient';
 import { cronTime, natsServer, watchMaxLimit } from './config';
@@ -11,21 +9,6 @@ import strapiClient from './strapiClient';
 import { Nats } from './types';
 
 const debug = Debug('app');
-
-const getRemoteAppWorks = async () => {
-  if (false) {
-    const mockData = await fs.readFile(path.join(__dirname, '../seeds/data.json'), 'utf-8');
-    return JSON.parse(mockData);
-  }
-
-  const appKey = await appWorkClient.getAppKey();
-  if (!appKey) {
-    throw new Error('AppKey is not found');
-  }
-  const remoteAppWorks = await appWorkClient.getAppWorks(appKey);
-  debug(`got ${remoteAppWorks.length} appWorks`);
-  return remoteAppWorks;
-};
 
 const run = async () => {
   try {
@@ -37,7 +20,7 @@ const run = async () => {
     });
     debug('Nats connected');
 
-    const remoteAppWorks = await getRemoteAppWorks();
+    const remoteAppWorks = await appWorkClient.getAppWorks();
     const localAppWorks = await strapiClient.getAppWorks();
 
     // need to create
