@@ -1,0 +1,8 @@
+node_modules
+build
+dist
+.tmp
+.cache
+.env
+.coverage
+.drone.yml
