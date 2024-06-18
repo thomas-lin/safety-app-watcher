@@ -4,6 +4,9 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "develop": "DEBUG=*,-nodemon* nodemon ./src/index.ts",
+    "build": "rm -rf dist && tsc -p tsconfig.prod.json",
+    "start": "node -r ./tsconfig-paths-bootstrap.js dist/index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Thomas Lin",
@@ -12,6 +15,7 @@
     "cron": "^1.8.2",
     "cross-fetch": "^3.1.5",
     "debug": "^4.3.4",
+    "dom-parser": "^1.1.5",
     "dotenv": "^16.0.0",
     "moment": "^2.29.1",
     "moment-timezone": "^0.5.34",
