@@ -14,7 +14,8 @@ const filter = (data: any) => {
     .filter((data: any) => data.VIDEOURL !== '');
 };
 const getAppWorks = async () => {
-  if (true) {
+  // for test
+  if (false) {
     const mockData = await fs.readFile(path.join(__dirname, '../seeds/data.json'), 'utf-8');
     return filter(JSON.parse(mockData));
   }
